@@ -2,6 +2,7 @@ function New-BigIpSession {
     [CmdletBinding()]
     param (
         $root,
+        [PSCredential]
         $credential
     )
 
