@@ -12,7 +12,7 @@ function New-BigIpSession {
         loginProviderName = "tmos" 
     } | ConvertTo-Json
     
-    $result = Invoke-RestMethod "$root/mgmt/shared/authn/login" -Method POST -Body $body -ContentType 'application/json' -Credential $credential | Write-Output
+    $result = Invoke-RestMethod "$root/mgmt/shared/authn/login" -Method POST -Body $body -ContentType 'application/json' -Credential $credential
 
     $Script:Session = New-Object -TypeName PsCustomobject -Property @{
         root = $root
@@ -24,7 +24,7 @@ function New-BigIpSession {
     $Script:Session.webSession.Headers.Add("X-F5-Auth-Token", $token)
 
     # Token expiration
-    $tokenLifeSpan = 1200
+    $tokenLifeSpan = 120
     $ts = New-TimeSpan -Minutes ($tokenLifespan/60)
     $date = Get-Date -Date $result.token.startTime 
     $expirationTime = $date + $ts
