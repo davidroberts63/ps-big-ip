@@ -16,7 +16,7 @@ function Invoke-BigIpRestRequest {
     }
 
     $uri = $session.root + $path
-    
+
     # Clone headers so we don't mess up the session headers with transaction id.
     $headers = @{}
     $session.webSession.Headers.GetEnumerator() | ForEach-Object {
@@ -51,14 +51,17 @@ function Invoke-BigIpRestRequest {
         }
     } catch {
         if($_.ErrorDetails) {
-            # Need to handle case where ErrorDetails is not a json response.
-            $details = $_.ErrorDetails | ConvertFrom-Json -ErrorAction SilentlyContinue
-            if($details.code -and $details.code -eq 404 -and $method -eq "GET") {
-                # Whatever was asked for doesn't exist as far as the F5 knows.
-                return;
+            try {
+                $details = $_.ErrorDetails | ConvertFrom-Json -ErrorAction SilentlyContinue
+                if($details.code -and $details.code -eq 404 -and $method -eq "GET") {
+                    # Whatever was asked for doesn't exist as far as the F5 knows.
+                    return;
+                }
+            } catch {
+                # No-op. The JSON wasn't valid so throw as usual
             }
         }
 
-        throw;
+        throw $_;
     }
 }
