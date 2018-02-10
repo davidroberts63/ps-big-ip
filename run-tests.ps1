@@ -1,4 +1,4 @@
-Import-Module .\big-ip\Big-Ip.psd1
+Import-Module $PSScriptRoot\big-ip\Big-Ip.psd1
 Import-Module Pester -ErrorAction SilentlyContinue
 $pester = Get-Module Pester
 if(-not $pester) {
@@ -8,4 +8,4 @@ if(-not $pester) {
     exit 1
 }
 
-Invoke-Pester -Path .\tests -CodeCoverage .\big-ip\functions\*
+Invoke-Pester -Path $PSScriptRoot\tests -CodeCoverage $PSScriptRoot\big-ip\functions\*
