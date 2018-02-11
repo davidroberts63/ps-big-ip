@@ -8,4 +8,6 @@ if(-not $pester) {
     exit 1
 }
 
-Invoke-Pester -Path $PSScriptRoot\tests -CodeCoverage $PSScriptRoot\big-ip\functions\*
+Invoke-Pester -Path $PSScriptRoot\tests `
+    -CodeCoverage $PSScriptRoot\big-ip\functions\* `
+    -CodeCoverageOutputFile .\coverage.coco -CodeCoverageOutputFileFormat JaCoCo
