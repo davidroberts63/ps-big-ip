@@ -1,25 +1,24 @@
 function Get-CoverallsReport() {
     [CmdletBinding()]
     param(
-        $coverageData
+        $coverageData,
+        $coverallsToken
     )
 
     $report = New-Object PSCustomObject -Property @{
-        repo_token = "TnhlDxlxyaZshKwWaE9KpvcA8oRqpd8CH";
+        repo_token = $coverallsToken;
         service_name = "local";
         source_files = @()
     }
 
-    $allCommands = $coverageData.HitCommands + $coverageData.MissedCommands
-    $allCommands | Group-Object File | %{
+    $coverageData.HitCommands | Group-Object File | %{
         $file = $_.Name
         $lineCount = (Get-Content $file).Length # This includes blank lines, Measure-Object skips those, causing problems.
 
         $coverageFile = New-Object PSCustomObject -Property @{
             name = (Resolve-Path $file -Relative).Replace(".\","").Replace("\","/");
             source_digest = (Get-FileHash -Path $file -Algorithm MD5).Hash;
-            source = "hello";
-            coverage = @(@(0..($lineCount-1)) | ForEach-Object { "null" })
+            coverage = @(@(0..($lineCount-1)) | ForEach-Object { $null })
         }
         
         $_.Group | Group-Object Line | %{
@@ -32,6 +31,20 @@ function Get-CoverallsReport() {
         }
 
         $report.source_files += $coverageFile
+    }
+
+    $coverageData.MissedCommands | ForEach-Object {
+        $name = (Resolve-Path $_.File -Relative).Replace(".\","").Replace("\","/");
+        $sourceFile = $report.source_files | Where-Object name -eq $name
+        if(-not $sourceFile) {
+            $sourceFile = New-Object PSCustomObject -Property @{
+                name = $name
+                source_digest = (Get-FileHash -Path $_.File -Algorithm MD5).Hash;
+                coverage = @(@(0..($lineCount-1)) | ForEach-Object { $null })
+            }
+            $report.source_files += $sourceFile
+        }
+        $sourceFile.coverage[$_.Line - 1] = 0;
     }
 
     $report | Write-Output
