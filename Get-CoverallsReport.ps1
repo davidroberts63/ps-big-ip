@@ -5,10 +5,36 @@ function Get-CoverallsReport() {
         $coverallsToken
     )
 
+    $git = Get-Command git -ErrorAction SilentlyContinue
+    $gitData = $null
+    if($git -and (& $git status)) {
+        $commitData = & $git show -s --format=%H%n%an%n%ae%n%cn%n%ce%n%s HEAD
+        $remoteNames = & $git remote
+
+        $gitData = @{
+            head = @{
+                id = $commitData[0];
+                author_name = $commitData[1];
+                author_email = $commitData[2];
+                committer_name = $commitData[3];
+                committer_email = $commitData[4];
+                message = $commitData[5];
+            };
+            branch = & $git rev-parse --abbrev-ref HEAD;
+            remotes = @($remoteNames | ForEach-Object {
+                @{
+                    name = $_;
+                    url = & $git remote get-url $_;
+                }
+            })
+        }
+    }
+
     $report = New-Object PSCustomObject -Property @{
         repo_token = $coverallsToken;
         service_name = "local";
-        source_files = @()
+        source_files = @();
+        git = $gitData
     }
 
     $coverageData.HitCommands | Group-Object File | %{

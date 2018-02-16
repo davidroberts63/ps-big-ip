@@ -30,5 +30,4 @@ $content = New-Object System.Net.Http.StringContent(($report | ConvertTo-Json -D
 $formData.Add($content, "json_file", "coverage.json") | Out-Null
 $headers = @{ "Content-Type" = ($formData.Headers | Select Key,Value | Where Key -eq "Content-Type" | Select -ExpandProperty Value) }
 
-($report | ConvertTo-Json -Depth 10) | Out-File .\coveralls-report.json -Encoding ascii
 Invoke-RestMethod -Uri "https://coveralls.io/api/v1/jobs" -Method Post -Headers $headers -Body ($formData.ReadAsStringAsync().Result)
