@@ -1,6 +1,6 @@
 Import-Module $PSScriptRoot\big-ip\Big-Ip.psd1
 Import-Module Pester -ErrorAction SilentlyContinue
-$pester = Get-Module Pester
+$pester = Get-Module Pester -ErrorAction SilentlyContinue
 if(-not $pester) {
     Write-Warning "Could not find the Pester Powershell module. 'Install-Module Pester -Force -SkipPublisherCheck' first."
 } elseif($pester.Version.Major -lt 4) {
