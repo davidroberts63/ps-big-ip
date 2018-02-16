@@ -34,6 +34,7 @@ function Get-CoverallsReport() {
         repo_token = $coverallsToken;
         service_name = "local";
         source_files = @();
+        service_pull_request = $ENV:APPVEYOR_PULL_REQUEST_NUMBER;
         git = $gitData
     }
 
