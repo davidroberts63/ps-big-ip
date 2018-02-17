@@ -60,7 +60,7 @@ function Get-CoverallsReport() {
         $report.source_files += $coverageFile
     }
 
-    $coverageData.MissedCommands | ForEach-Object {
+    $coverageData.MissedCommands | Where-Object { $_ } | ForEach-Object {
         $name = (Resolve-Path $_.File -Relative).Replace(".\","").Replace("\","/");
         $sourceFile = $report.source_files | Where-Object name -eq $name
         if(-not $sourceFile) {
