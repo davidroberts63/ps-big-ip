@@ -16,8 +16,8 @@ function Get-CoverallsReport() {
                 id = $commitData[0];
                 author_name = $commitData[1];
                 author_email = $commitData[2];
-                committer_name = $commitData[3];
-                committer_email = $commitData[4];
+                committer_name = $commitData[1]; # CI PR builds have Github Web-Flow as the committer so use author
+                committer_email = $commitData[2];
                 message = $commitData[5];
             };
             branch = & $git rev-parse --abbrev-ref HEAD;
