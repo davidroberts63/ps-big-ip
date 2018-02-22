@@ -1,4 +1,6 @@
 # BIG-IP Powershell Module
+[![Build status](https://ci.appveyor.com/api/projects/status/56ujpqrniiil5q43?svg=true)](https://ci.appveyor.com/project/davidroberts63/ps-big-ip)
+[![Coverage Status](https://coveralls.io/repos/github/davidroberts63/ps-big-ip/badge.svg)](https://coveralls.io/github/davidroberts63/ps-big-ip)
 
 A Powershell module for the F5 BIG-IP REST API interface. It works with version 12+.
 
