@@ -10,5 +10,4 @@ if(-not $pester) {
 
 Invoke-Pester -Path $PSScriptRoot\tests `
     -OutputFile $PSScriptRoot\tests-results.xml -OutputFormat NUnitXML `
-    -CodeCoverage $PSScriptRoot\big-ip\functions\* `
-    -CodeCoverageOutputFile $PSScriptRoot\coverage-results.xml -CodeCoverageOutputFileFormat JaCoCo
+    -CodeCoverage $PSScriptRoot\big-ip\functions\*

@@ -2,7 +2,8 @@ param(
     [switch]
     $Locally,
     [switch]
-    $PowerShellGallery
+    $PowerShellGallery,
+    $NuGetApiKey = $ENV:NUGET_APIKEY
 )
 
 $ErrorActionPreference = "STOP"
@@ -42,5 +43,12 @@ if($Locally) {
 }
 
 if ($PowerShellGallery) {
-    Write-Host "Publishing to the PowerShell Gallery"
+    Write-Host "Checking against published module"
+    $published = Find-Module Big-Ip -ErrorAction SilentlyContinue
+    $local = (Import-PowerShellDataFile .\Big-Ip\Big-Ip.psd1)
+
+    if(-not $published -or ($local.ModuleVersion -gt $published.Version)) {
+        Write-Host "Publishing to the PowerShell Gallery"
+        Publish-Module -Path $PSScriptRoot\Big-Ip -NuGetApiKey $NuGetApiKey -Verbose
+    }
 }
