@@ -10,19 +10,19 @@ $ErrorActionPreference = "STOP"
 Import-Module PowerShellGet -ErrorAction SilentlyContinue
 $powershellGet = Get-Module PowerShellGet
 if(-not $powershellGet) {
-    Write-Warning "Could not find the PowerShellGet module. 'Install-Module PowerShellGet' first."
+    Write-Warning 'Could not find the PowerShellGet module. "Install-Module PowerShellGet" first.'
 } elseif($powershellGet.Version -lt "1.6.0") {
-    Write-Warning "PowerShellGet 1.6.0 and greater is required. 'Install-Module PowerShellGet -Force' first."
+    Write-Warning 'PowerShellGet 1.6.0 and greater is required. "Install-Module PowerShellGet -Force" first.'
     exit 1
 }
 
 if(-not $Locally -and -not $PowerShellGallery) {
-    Write-Warning "You must specify either -Locally or -PowerShellGallery"
+    Write-Warning 'You must specify either -Locally or -PowerShellGallery'
     exit 1
 }
 
 if($Locally) {
-    Write-Host "Publishing locally"
+    Write-Host 'Publishing locally'
     $name = "LocalBigIp"
     $path = "$PSScriptRoot\localgallery"
 
@@ -42,5 +42,6 @@ if($Locally) {
 }
 
 if ($PowerShellGallery) {
-    Write-Host "Publishing to the PowerShell Gallery"
+    Write-Host 'Publishing to the PowerShell Gallery'
+    Write-Host 'Haha, not really, manual for now'
 }

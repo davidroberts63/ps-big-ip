@@ -1,3 +1,8 @@
+param(
+    [switch]
+    $SendCoverageReport
+)
+
 Import-Module $PSScriptRoot\big-ip\Big-Ip.psd1
 Import-Module Pester -ErrorAction SilentlyContinue
 $pester = Get-Module Pester -ErrorAction SilentlyContinue
@@ -8,23 +13,27 @@ if(-not $pester) {
     exit 1
 }
 
+Write-Host 'Pestering...'
 $results = Invoke-Pester -PassThru -Path $PSScriptRoot\tests `
     -OutputFile $PSScriptRoot\tests-results.xml -OutputFormat NUnitXML `
     -CodeCoverage $PSScriptRoot\big-ip\functions\* `
     -CodeCoverageOutputFile $PSScriptRoot\coverage-results.xml -CodeCoverageOutputFileFormat JaCoCo
 
-Write-Host "Generating Coveralls report"
-. .\Get-CoverallsReport.ps1
-$report = Get-CoverallsReport $results.CodeCoverage $ENV:COVERALLS_TOKEN
 
-Write-Host "Uploading Coveralls report"
-Add-Type -AssemblyName System.Net.Http | Out-Null
-$formData = New-Object System.Net.Http.MultipartFormDataContent
-$content = New-Object System.Net.Http.StringContent(($report | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8, "application/json")
-$formData.Add($content, "json_file", "coverage.json") | Out-Null
-$headers = @{ "Content-Type" = ($formData.Headers | Select Key,Value | Where Key -eq "Content-Type" | Select -ExpandProperty Value) }
+if($SendCoverageReport) {
+    Write-Host "Generating Coveralls report"
+    . .\Get-CoverallsReport.ps1
+    $report = Get-CoverallsReport $results.CodeCoverage $ENV:COVERALLS_TOKEN
 
-Invoke-RestMethod -Uri "https://coveralls.io/api/v1/jobs" -Method Post -Headers $headers -Body ($formData.ReadAsStringAsync().Result)
+    Write-Host 'Uploading Coveralls report'
+    Add-Type -AssemblyName System.Net.Http | Out-Null
+    $formData = New-Object System.Net.Http.MultipartFormDataContent
+    $content = New-Object System.Net.Http.StringContent(($report | ConvertTo-Json -Depth 10), [System.Text.Encoding]::UTF8, "application/json")
+    $formData.Add($content, "json_file", "coverage.json") | Out-Null
+    $headers = @{ "Content-Type" = ($formData.Headers | Select-Object Key,Value | Where-Object Key -eq "Content-Type" | Select-Object -ExpandProperty Value) }
+
+    Invoke-RestMethod -Uri "https://coveralls.io/api/v1/jobs" -Method Post -Headers $headers -Body ($formData.ReadAsStringAsync().Result)
+}
 
 if($ENV:APPVEYOR_JOB_ID) {
     Write-Host "Uploading tests results to AppVeyor"
