@@ -1,10 +1,10 @@
-Import-Module (Resolve-Path $PSScriptRoot\..\big-ip\big-ip.psd1) -Force
+Import-Module (Resolve-Path $PSScriptRoot\..\GRAND-IP\GRAND-IP.psd1) -Force
 
 Describe "New-BigIpSession" {
     $resultingSession = $null
 
     BeforeEach {
-        Mock -ModuleName Big-Ip Invoke-RestMethod -MockWith { 
+        Mock -ModuleName GRAND-IP Invoke-RestMethod -MockWith { 
             $theDate = Get-Date
             @{ 
                 token = @{ 
@@ -19,19 +19,19 @@ Describe "New-BigIpSession" {
     }
 
     It "Uses the correct api path" {
-        Assert-MockCalled -ModuleName Big-Ip Invoke-RestMethod 1 -ParameterFilter {
+        Assert-MockCalled -ModuleName GRAND-IP Invoke-RestMethod 1 -ParameterFilter {
             $uri -like "*/mgmt/shared/authn/login"
         }
     }
 
     It "Uses the correct method" {
-        Assert-MockCalled -ModuleName Big-Ip Invoke-RestMethod 1 -ParameterFilter {
+        Assert-MockCalled -ModuleName GRAND-IP Invoke-RestMethod 1 -ParameterFilter {
             $method -eq "POST"
         }
     }
 
     It "Provides the proper credentials payload" {
-        Assert-MockCalled -ModuleName Big-Ip Invoke-RestMethod 1 -ParameterFilter {
+        Assert-MockCalled -ModuleName GRAND-IP Invoke-RestMethod 1 -ParameterFilter {
             $payload = $body | ConvertFrom-Json
             
             ($payload.username -eq "hello") `

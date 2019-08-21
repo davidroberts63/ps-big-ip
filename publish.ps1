@@ -34,7 +34,7 @@ if($Locally) {
 
     # Note, the case in the folder name specified here affects how it's put into the repository.
     # So leave it as is. Why? I don't know but it's really annoying.
-    Publish-Module -Path $PSScriptRoot\Big-Ip -Repository $name
+    Publish-Module -Path $PSScriptRoot\GRAND-IP -Repository $name
 
     Unregister-PSRepository -Name $name
 

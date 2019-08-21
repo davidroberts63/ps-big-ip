@@ -1,10 +1,10 @@
-Import-Module (Resolve-Path $PSScriptRoot\..\big-ip\big-ip.psd1) -Force
+Import-Module (Resolve-Path $PSScriptRoot\..\GRAND-IP\GRAND-IP.psd1) -Force
 
 Describe 'Invoke-BigIpRestRequest' {
     BeforeEach {
-        Mock -ModuleName Big-Ip Invoke-RestMethod -MockWith { }
+        Mock -ModuleName GRAND-IP Invoke-RestMethod -MockWith { }
         
-        InModuleScope -ModuleName Big-Ip {
+        InModuleScope -ModuleName GRAND-IP {
             $Script:session = @{
                 root = "not-used"
                 webSession = New-Object Microsoft.PowerShell.Commands.WebRequestSession
@@ -13,7 +13,7 @@ Describe 'Invoke-BigIpRestRequest' {
     }
 
     It "Does not throw when receiving a 404 from big-ip GET request" {
-        InModuleScope -ModuleName Big-Ip {
+        InModuleScope -ModuleName GRAND-IP {
             Mock Invoke-Restmethod -MockWith {
                 $er = New-Object Management.Automation.ErrorRecord(
                     (New-Object System.ApplicationException),
@@ -30,7 +30,7 @@ Describe 'Invoke-BigIpRestRequest' {
     }
 
     It "Does throw when receiving a non json error response from big-ip" {
-        InModuleScope -ModuleName Big-Ip {
+        InModuleScope -ModuleName GRAND-IP {
             Mock Invoke-Restmethod -MockWith {
                 $er = New-Object Management.Automation.ErrorRecord(
                     (New-Object System.ApplicationException), # Produces 'Error in the application.' error message.
@@ -50,7 +50,7 @@ Describe 'Invoke-BigIpRestRequest' {
         BeforeEach { 
             Invoke-BigIpRestRequest -path "/" 
         }
-        InModuleScope Big-Ip {
+        InModuleScope GRAND-IP {
             It "Does not send a body with no payload" {
                 Assert-MockCalled Invoke-RestMethod -ParameterFilter {
                     $body -eq $null
@@ -77,7 +77,7 @@ Describe 'Invoke-BigIpRestRequest' {
             Invoke-BigIpRestRequest -payload @{ planet = "jupiter" } -path ""
         }
 
-        InModuleScope Big-Ip {
+        InModuleScope GRAND-IP {
             It "Sends it as json in the body" {
                 Assert-MockCalled Invoke-RestMethod 1 -ParameterFilter {
                     $body -eq (@{ planet = "jupiter" } | ConvertTo-Json)
@@ -97,7 +97,7 @@ Describe 'Invoke-BigIpRestRequest' {
             Invoke-BigIpRestRequest -payload @{ planet = "jupiter" } -path "" -transaction @{ transId = "123456789" }
         }
 
-        InModuleScope Big-Ip {
+        InModuleScope GRAND-IP {
             It "Adds the f5 transaction header" {
                 Assert-MockCalled Invoke-RestMethod 1 -ParameterFilter {
                     $headers.ContainsKey("X-F5-REST-Coordination-Id") -eq $true `

@@ -1,4 +1,4 @@
-# BIG-IP Powershell Module
+# GRAND-IP Powershell Module
 [![Build status](https://ci.appveyor.com/api/projects/status/56ujpqrniiil5q43?svg=true)](https://ci.appveyor.com/project/davidroberts63/ps-big-ip)
 [![Coverage Status](https://coveralls.io/repos/github/davidroberts63/ps-big-ip/badge.svg)](https://coveralls.io/github/davidroberts63/ps-big-ip)
 
@@ -9,8 +9,8 @@ The goal is to provide easy access to any BIG-IP REST API via the core `Invoke-B
 ## Installing
 
 ```
-Install-Module Big-Ip
-Import-Module Big-Ip
+Install-Module GRAND-IP
+Import-Module GRAND-IP
 ```
 
 ## Logging in

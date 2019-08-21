@@ -3,7 +3,7 @@ param(
     $SendCoverageReport
 )
 
-Import-Module $PSScriptRoot\big-ip\Big-Ip.psd1
+Import-Module $PSScriptRoot\GRAND-IP\GRAND-IP.psd1
 Import-Module Pester -ErrorAction SilentlyContinue
 $pester = Get-Module Pester -ErrorAction SilentlyContinue
 if(-not $pester) {
@@ -16,7 +16,7 @@ if(-not $pester) {
 Write-Host 'Pestering...'
 $results = Invoke-Pester -PassThru -Path $PSScriptRoot\tests `
     -OutputFile $PSScriptRoot\tests-results.xml -OutputFormat NUnitXML `
-    -CodeCoverage $PSScriptRoot\big-ip\functions\* `
+    -CodeCoverage $PSScriptRoot\GRAND-IP\functions\* `
     -CodeCoverageOutputFile $PSScriptRoot\coverage-results.xml -CodeCoverageOutputFileFormat JaCoCo
 
 

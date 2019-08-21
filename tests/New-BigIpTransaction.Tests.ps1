@@ -1,9 +1,9 @@
-Import-Module (Resolve-Path $PSScriptRoot\..\big-ip\big-ip.psd1) -Force
+Import-Module (Resolve-Path $PSScriptRoot\..\GRAND-IP\GRAND-IP.psd1) -Force
 
 Describe 'New-BigIpTransaction' {
 
     BeforeEach {
-        Mock -ModuleName Big-Ip Invoke-RestMethod -MockWith { 
+        Mock -ModuleName GRAND-IP Invoke-RestMethod -MockWith { 
             @{ 
                 token = @{ 
                     token = "1"; 
@@ -15,7 +15,7 @@ Describe 'New-BigIpTransaction' {
         $password = "world" | ConvertTo-SecureString -AsPlainText -Force
         New-BigIpSession -root "" -credential (new-object PSCredential("hello", $password)) | FL *
         
-        Mock -ModuleName Big-Ip Invoke-RestMethod -MockWith { 
+        Mock -ModuleName GRAND-IP Invoke-RestMethod -MockWith { 
             @{ transId = "1" } | Write-Output 
         }
     }
@@ -32,11 +32,11 @@ Describe 'New-BigIpTransaction' {
             webSession = New-Object Microsoft.PowerShell.Commands.WebRequestSession
         }
 
-        Assert-MockCalled -ModuleName Big-Ip Invoke-RestMethod 1 -ParameterFilter { $Uri -like "https://helloworld*" }
+        Assert-MockCalled -ModuleName GRAND-IP Invoke-RestMethod 1 -ParameterFilter { $Uri -like "https://helloworld*" }
     }
 
     It "Uses the correct api path" {
         New-BigIpTransaction
-        Assert-MockCalled -ModuleName Big-Ip Invoke-RestMethod 1 -ParameterFilter { $Uri -like "*/mgmt/tm/transaction" }
+        Assert-MockCalled -ModuleName GRAND-IP Invoke-RestMethod 1 -ParameterFilter { $Uri -like "*/mgmt/tm/transaction" }
     }
 }
